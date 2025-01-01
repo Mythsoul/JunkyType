@@ -1,9 +1,12 @@
 import express from "express";
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import cors from 'cors';
 
 const app = express();
 const port = 3000;
+
+app.use(cors()); // Enable CORS for all routes
 
 app.get("/api/english.json", (req, res) => {
     try {
