@@ -7,7 +7,17 @@ function Options() {
   const dispatch = useDispatch();
   const currentLanguage = useSelector((state) => state.settings.language);
   const currentTheme = useSelector((state) => state.settings.theme);
-  console.log(currentTheme)
+
+  // Fix theme initialization
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      dispatch(setTheme(savedTheme));
+    } else {
+      localStorage.setItem('theme', 'dark');
+      dispatch(setTheme('dark'));
+    }
+  }, []); 
 
   useEffect(() => {
     async function fetchLanguages() {
@@ -24,24 +34,11 @@ function Options() {
     fetchLanguages();
   }, []);
 
-  useEffect(() => {
-    async function gettheme(){ 
-      const theme =  localStorage.getItem('theme'); 
-      if(theme){ 
-        dispatch(setTheme(theme)); 
-      }else{ 
-        localStorage.setItem('theme', 'dark');
-        dispatch(setTeme('dark')); 
-      }
-    }
-  })
-
-  const toggletheme = (e)=>{ 
-    dispatch(setTheme(e.target.value));
-    const savetheme = localStorage.setItem('theme', e.target.value);  
-  }
-
-
+  const handleThemeChange = (e) => {
+    const newTheme = e.target.value;
+    localStorage.setItem('theme', newTheme);
+    dispatch(setTheme(newTheme));
+  };
 
   return (
     <div className={`rounded-lg p-6 shadow-lg ${currentTheme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
@@ -79,7 +76,7 @@ function Options() {
             name="theme"
             id="theme"
             value={currentTheme}
-            onChange={toggletheme}
+            onChange={handleThemeChange}
             className={`w-full rounded-md py-2 px-3 border focus:outline-none focus:ring-2 transition-all duration-200
               ${currentTheme === 'dark'
                 ? 'bg-gray-700 text-gray-300 border-gray-600 focus:border-green-400 focus:ring-green-400/20'
