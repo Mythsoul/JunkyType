@@ -1,6 +1,6 @@
 # JunkeyType Frontend
 
-Welcome to the JunkeyType project!
+Welcome to the JunkeyType project! This repository contains the frontend code for the JunkeyType application.
 
 ## Project Overview
 
