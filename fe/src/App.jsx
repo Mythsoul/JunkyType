@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './store/store';
 import { useSelector } from 'react-redux';
-import Navbar from "./components/navbar";
+import Navbar from "./components/Navbar";
 import Typearea from "./components/Typearea";
 import Leaderboard from "./components/Leaderboard";
 import Profile from "./components/Profile";
