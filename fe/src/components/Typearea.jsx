@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import Info from './Info';
-import Options from './Options';
+import Options from "./Options";
 
 const DisplayText = ({ targetText, userInput }) => {
   const theme = useSelector((state) => state.settings.theme);
