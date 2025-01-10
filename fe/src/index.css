@@ -128,3 +128,22 @@
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
+
+/* Ultra-smooth cursor blink animation */
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Performance optimizations for typing */
+.typing-optimized {
+  will-change: contents;
+  contain: layout style;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform: translateZ(0);
+}

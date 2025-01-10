@@ -3,7 +3,7 @@ import { Provider } from "react-redux"
 import store from "./store/store"
 import { useSelector } from "react-redux"
 import Navbar from "./components/Navbar"
-import Typearea from "./components/Typearea"
+import TypeareaOptimized from "./components/TypeareaOptimized"
 import Leaderboard from "./components/Leaderboard"
 import Profile from "./components/Profile"
 
@@ -22,7 +22,7 @@ function AppContent() {
         <Navbar />
         <main className="container mx-auto px-4 py-8">
           <Routes>
-            <Route path="/" element={<Typearea />} />
+            <Route path="/" element={<TypeareaOptimized />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/profile" element={<Profile />} />
           </Routes>
