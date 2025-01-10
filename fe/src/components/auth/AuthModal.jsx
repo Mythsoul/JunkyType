@@ -1,13 +1,19 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { setAuthModalOpen } from '../../store/slices/authSlice'
 import Login from './Login'
 import Register from './Register'
 
 function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
+  const dispatch = useDispatch()
   const [mode, setMode] = useState(initialMode)
   const theme = useSelector(state => state.settings.theme)
+
+  useEffect(() => {
+    dispatch(setAuthModalOpen(isOpen))
+  }, [isOpen, dispatch])
 
   useEffect(() => {
     setMode(initialMode)

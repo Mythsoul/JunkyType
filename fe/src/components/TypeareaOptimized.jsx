@@ -21,6 +21,7 @@ const Char = React.memo(({ char, isCorrect, isIncorrect, isCurrent }) => (
 function TypeareaOptimized() {
   const theme = useSelector(state => state.settings.theme)
   const language = useSelector(state => state.settings.language)
+  const isAuthModalOpen = useSelector(state => state.auth.isAuthModalOpen)
   
   // Core state
   const [words, setWords] = useState([])
@@ -82,7 +83,7 @@ function TypeareaOptimized() {
   
   // Handle typing
   const handleKeyDown = useCallback((e) => {
-    if (isComplete) return
+    if (isComplete || isAuthModalOpen) return
     
     // Start typing
     if (!isStarted && e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
@@ -241,7 +242,7 @@ function TypeareaOptimized() {
   // Memoized character rendering for performance
   const renderedChars = useMemo(() => {
     const target = targetText.current
-    
+  
     if (!target) {
       console.log('No target text')
       return <div className="text-red-500">No text loaded</div>

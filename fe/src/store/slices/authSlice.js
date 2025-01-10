@@ -8,6 +8,16 @@ import {
   resendVerificationEmail as authResendVerificationEmail
 } from 'easy.auth98'
 
+const initialState = {
+  user: null,
+  isAuthenticated: false,
+  isLoading: false,
+  error: null,
+  isInitialized: false,
+  registrationComplete: false,
+  isAuthModalOpen: false
+}
+
 // Async thunks
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
@@ -102,19 +112,13 @@ export const resendVerificationEmail = createAsyncThunk(
   }
 )
 
-const initialState = {
-  user: null,
-  isAuthenticated: false,
-  isLoading: false,
-  error: null,
-  isInitialized: false,
-  registrationComplete: false,
-}
-
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    setAuthModalOpen: (state, action) => {
+      state.isAuthModalOpen = action.payload;
+    },
     clearError: (state) => {
       state.error = null
     },
@@ -211,5 +215,5 @@ const authSlice = createSlice({
   }
 })
 
-export const { clearError, clearRegistrationComplete, setUser } = authSlice.actions
+export const { setAuthModalOpen, clearError, clearRegistrationComplete, setUser } = authSlice.actions
 export default authSlice.reducer
