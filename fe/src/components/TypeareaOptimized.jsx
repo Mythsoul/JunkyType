@@ -1,27 +1,71 @@
 "use client"
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react"
-import { useSelector } from "react-redux"
-import { RotateCcw, Zap, Target, AlertCircle } from "lucide-react"
+import { useSelector, useDispatch } from "react-redux"
+import { RotateCcw, Zap, Target, AlertCircle, Clock, Hash, Eye } from "lucide-react"
+import { saveTestResult, updateCurrentTest, startTest, completeTest, resetTest } from '../store/slices/userStatsSlice'
 
-// Ultra-lightweight character component
-const Char = React.memo(({ char, isCorrect, isIncorrect, isCurrent }) => (
-  <span 
-    className={`font-mono text-2xl ${
-      isCorrect ? "text-green-400" :
-      isIncorrect ? "text-red-400" :
-      isCurrent ? "text-white bg-blue-500/30 px-1 rounded" :
-      "text-gray-400"
-    }`}
-  >
-    {char === " " ? "\u00A0" : char}
-  </span>
-))
+// Enhanced character component with settings integration
+const Char = React.memo(({ char, isCorrect, isIncorrect, isCurrent, settings, blindMode, isTyped }) => {
+  const getFontClass = () => {
+    switch (settings.fontFamily) {
+      case 'serif': return 'font-serif'
+      case 'sans': return 'font-sans'
+      default: return 'font-mono'
+    }
+  }
+
+  const getCursorClass = () => {
+    if (!isCurrent) return ''
+    
+    const baseClass = settings.smoothCaret ? 'transition-all duration-200' : ''
+    
+    switch (settings.cursorStyle) {
+      case 'line':
+        return `${baseClass} border-l-2 border-blue-400 pl-1`
+      case 'underline':
+        return `${baseClass} border-b-2 border-blue-400`
+      default:
+        return `${baseClass} bg-blue-400/30 px-1 rounded`
+    }
+  }
+
+  const getColorClass = () => {
+    if (blindMode && isTyped && !isCurrent) return 'text-transparent'
+    
+    if (isCorrect) {
+      return settings.colorTheme === 'neon' ? 'text-green-300' : 'text-green-400'
+    }
+    
+    if (isIncorrect && settings.highlightErrors) {
+      return settings.colorTheme === 'neon' ? 'text-red-300' : 'text-red-400'
+    }
+    
+    if (isCurrent) {
+      return settings.theme === 'dark' ? 'text-white' : 'text-gray-900'
+    }
+    
+    return settings.theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+  }
+
+  return (
+    <span 
+      className={`${getFontClass()} ${getCursorClass()} ${getColorClass()}`}
+      style={{ fontSize: `${settings.fontSize}px` }}
+    >
+      {char === " " ? "\u00A0" : char}
+    </span>
+  )
+})
 
 function TypeareaOptimized() {
-  const theme = useSelector(state => state.settings.theme)
-  const language = useSelector(state => state.settings.language)
+  const dispatch = useDispatch()
+  const settings = useSelector(state => state.settings)
+  const { theme, language, wordCount, timeLimit, fontSize, fontFamily, cursorStyle, 
+          smoothCaret, showLiveWPM, showLiveAccuracy, blindMode, highlightErrors,
+          includeNumbers, includePunctuation, difficulty } = settings
   const isAuthModalOpen = useSelector(state => state.auth.isAuthModalOpen)
+  const { isAuthenticated } = useSelector(state => state.auth)
   
   // Core state
   const [words, setWords] = useState([])
@@ -31,6 +75,8 @@ function TypeareaOptimized() {
   const [isLoading, setIsLoading] = useState(false)
   const [stats, setStats] = useState({ wpm: 0, accuracy: 100, errors: 0 })
   const [result, setResult] = useState(null)
+  const [timeRemaining, setTimeRemaining] = useState(null)
+  const [wordsCompleted, setWordsCompleted] = useState(0)
   
   // Refs for performance
   const startTime = useRef(null)
@@ -244,7 +290,6 @@ function TypeareaOptimized() {
     const target = targetText.current
   
     if (!target) {
-      console.log('No target text')
       return <div className="text-red-500">No text loaded</div>
     }
     
@@ -261,10 +306,13 @@ function TypeareaOptimized() {
           isCorrect={isCorrect}
           isIncorrect={isIncorrect}
           isCurrent={isCurrent}
+          settings={settings}
+          blindMode={blindMode}
+          isTyped={isTyped}
         />
       )
     })
-  }, [input, words])
+  }, [input, words, settings, blindMode])
   
   if (isLoading) {
     return (
