@@ -5,6 +5,7 @@ import { useSelector } from "react-redux"
 import Navbar from "./components/Navbar"
 import TypeareaOptimized from "./components/TypeareaOptimized"
 import Profile from "./components/Profile"
+import Leaderboard from "./components/Leaderboard"
 
 function AppContent() {
   const theme = useSelector((state) => state.settings.theme)
@@ -23,6 +24,7 @@ function AppContent() {
           <Routes>
             <Route path="/" element={<TypeareaOptimized />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
           </Routes>
         </main>
       </div>

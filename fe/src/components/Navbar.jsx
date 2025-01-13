@@ -90,6 +90,25 @@ function Navbar() {
                 Practice
               </NavLink>
 
+              <NavLink
+                to="/leaderboard"
+                className={({ isActive }) =>
+                  `px-4 py-2 rounded-lg text-sm font-medium no-underline transition-all duration-300 flex items-center gap-2
+                  ${
+                    isActive
+                      ? theme === "dark"
+                        ? "bg-emerald-500/20 text-emerald-400 shadow-lg shadow-emerald-500/20"
+                        : "bg-emerald-500/10 text-emerald-600 shadow-lg shadow-emerald-500/20"
+                      : theme === "dark"
+                        ? "text-gray-300 hover:bg-gray-700/50 hover:text-white"
+                        : "text-gray-600 hover:bg-gray-100/50 hover:text-gray-900"
+                  }`
+                }
+              >
+                <Trophy className="w-4 h-4" />
+                Leaderboard
+              </NavLink>
+
 
               {isAuthenticated && (
                 <NavLink
