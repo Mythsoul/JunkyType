@@ -1,13 +1,83 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 
-// Mock API functions - in a real app, these would be API calls
+// Enhanced persistence with backup and restore
+const STORAGE_KEYS = {
+  RESULTS: 'typingResults',
+  USER_PROFILE: 'userProfile', 
+  SETTINGS_BACKUP: 'settingsBackup',
+  SYNC_TIMESTAMP: 'lastSyncTimestamp'
+}
+
+const storage = {
+  save: (key, data) => {
+    try {
+      localStorage.setItem(key, JSON.stringify(data))
+      // Also save to backup with timestamp
+      const backup = {
+        data,
+        timestamp: new Date().toISOString(),
+        version: '1.0'
+      }
+      localStorage.setItem(`${key}_backup`, JSON.stringify(backup))
+      return true
+    } catch (error) {
+      console.error('Failed to save to storage:', error)
+      return false
+    }
+  },
+  load: (key, defaultValue = null) => {
+    try {
+      const item = localStorage.getItem(key)
+      return item ? JSON.parse(item) : defaultValue
+    } catch (error) {
+      console.error('Failed to load from storage:', error)
+      // Try to recover from backup
+      try {
+        const backup = localStorage.getItem(`${key}_backup`)
+        if (backup) {
+          const parsedBackup = JSON.parse(backup)
+          return parsedBackup.data || defaultValue
+        }
+      } catch (backupError) {
+        console.error('Failed to recover from backup:', backupError)
+      }
+      return defaultValue
+    }
+  },
+  exportData: () => {
+    const data = {
+      results: storage.load(STORAGE_KEYS.RESULTS, []),
+      profile: storage.load(STORAGE_KEYS.USER_PROFILE, {}),
+      settings: storage.load(STORAGE_KEYS.SETTINGS_BACKUP, {}),
+      exportDate: new Date().toISOString(),
+      version: '1.0'
+    }
+    return JSON.stringify(data, null, 2)
+  },
+  importData: (jsonString) => {
+    try {
+      const data = JSON.parse(jsonString)
+      if (data.version === '1.0') {
+        if (data.results) storage.save(STORAGE_KEYS.RESULTS, data.results)
+        if (data.profile) storage.save(STORAGE_KEYS.USER_PROFILE, data.profile)
+        if (data.settings) storage.save(STORAGE_KEYS.SETTINGS_BACKUP, data.settings)
+        return { success: true }
+      }
+      return { success: false, error: 'Incompatible data version' }
+    } catch (error) {
+      return { success: false, error: error.message }
+    }
+  }
+}
+
+// Enhanced API functions
 const mockAPI = {
   saveTestResult: async (testResult) => {
     // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 500))
+    await new Promise(resolve => setTimeout(resolve, 200))
     
-    // Get existing results from localStorage
-    const existingResults = JSON.parse(localStorage.getItem('typingResults') || '[]')
+    // Get existing results from enhanced storage
+    const existingResults = storage.load(STORAGE_KEYS.RESULTS, [])
     const newResult = {
       ...testResult,
       id: Date.now(),
@@ -15,15 +85,18 @@ const mockAPI = {
     }
     
     const updatedResults = [newResult, ...existingResults].slice(0, 100) // Keep last 100 results
-    localStorage.setItem('typingResults', JSON.stringify(updatedResults))
+    storage.save(STORAGE_KEYS.RESULTS, updatedResults)
+    
+    // Update sync timestamp
+    storage.save(STORAGE_KEYS.SYNC_TIMESTAMP, new Date().toISOString())
     
     return newResult
   },
   
   getUserStats: async (userId) => {
-    await new Promise(resolve => setTimeout(resolve, 300))
+    await new Promise(resolve => setTimeout(resolve, 200))
     
-    const results = JSON.parse(localStorage.getItem('typingResults') || '[]')
+    const results = storage.load(STORAGE_KEYS.RESULTS, [])
     
     if (results.length === 0) {
       return {
@@ -42,17 +115,22 @@ const mockAPI = {
     const wpmValues = results.map(r => r.wpm).filter(wpm => wpm > 0)
     const accuracyValues = results.map(r => r.accuracy).filter(acc => acc > 0)
     
-    return {
+    const stats = {
       testsCompleted: results.length,
-      avgWpm: Math.round(wpmValues.reduce((sum, wpm) => sum + wpm, 0) / wpmValues.length),
-      bestWpm: Math.max(...wpmValues),
-      avgAccuracy: Math.round(accuracyValues.reduce((sum, acc) => sum + acc, 0) / accuracyValues.length),
-      bestAccuracy: Math.max(...accuracyValues),
+      avgWpm: wpmValues.length > 0 ? Math.round(wpmValues.reduce((sum, wpm) => sum + wpm, 0) / wpmValues.length) : 0,
+      bestWpm: wpmValues.length > 0 ? Math.max(...wpmValues) : 0,
+      avgAccuracy: accuracyValues.length > 0 ? Math.round(accuracyValues.reduce((sum, acc) => sum + acc, 0) / accuracyValues.length) : 0,
+      bestAccuracy: accuracyValues.length > 0 ? Math.max(...accuracyValues) : 0,
       totalTimeTyping: results.reduce((sum, r) => sum + (r.timeSeconds || 0), 0),
       recentResults: results.slice(0, 10),
       rank: Math.floor(Math.random() * 1000) + 1, // Mock rank
       percentile: Math.floor(Math.random() * 100) + 1 // Mock percentile
     }
+    
+    // Cache user profile
+    storage.save(STORAGE_KEYS.USER_PROFILE, stats)
+    
+    return stats
   },
   
   getLeaderboard: async () => {
