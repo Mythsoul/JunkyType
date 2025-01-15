@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar"
 import TypeareaOptimized from "./components/TypeareaOptimized"
 import Profile from "./components/Profile"
 import Leaderboard from "./components/Leaderboard"
+import ErrorBoundary from "./components/ErrorBoundary"
 
 function AppContent() {
   const theme = useSelector((state) => state.settings.theme)
@@ -34,9 +35,11 @@ function AppContent() {
 
 function App() {
   return (
-    <Provider store={store}>
-      <AppContent />
-    </Provider>
+    <ErrorBoundary>
+      <Provider store={store}>
+        <AppContent />
+      </Provider>
+    </ErrorBoundary>
   )
 }
 
