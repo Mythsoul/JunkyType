@@ -185,23 +185,18 @@ function TypeareaOptimized() {
     let correct = 0
     let errors = 0
     
-    // Calculate based on what was actually typed
-    const typedLength = Math.min(finalInput.length, target.length)
-    
-    for (let i = 0; i < typedLength; i++) {
-      if (finalInput[i] === target[i]) {
+    // Calculate based on what was actually typed vs what was supposed to be typed
+    for (let i = 0; i < finalInput.length; i++) {
+      if (i < target.length && finalInput[i] === target[i]) {
         correct++
       } else {
         errors++
       }
     }
     
-    // Add errors for missing characters
-    if (target.length > finalInput.length) {
-      errors += target.length - finalInput.length
-    }
-    
-    const accuracy = typedLength > 0 ? Math.round((correct / typedLength) * 100) : 0
+    // For accuracy, use the total characters that should have been typed
+    const totalExpected = finalInput.length
+    const accuracy = totalExpected > 0 ? Math.round((correct / totalExpected) * 100) : 100
     const wpm = calculateWPM(correct, elapsed)
     
     const finalResult = {
@@ -568,11 +563,9 @@ function TypeareaOptimized() {
       <div className="w-full max-w-4xl">
         <div className="bg-gray-800/50 rounded-2xl p-8 border border-gray-700/50">
           {/* Text display */}
-          <div className="relative w-full h-48 overflow-hidden">
-            <div className="absolute inset-0 p-6">
-              <div className="text-2xl font-mono leading-8 select-none" style={{ lineHeight: '2rem', fontFamily: 'ui-monospace, monospace' }}>
-                {renderedChars}
-              </div>
+          <div className="w-full min-h-[200px] p-6 flex items-center justify-center">
+            <div className="text-2xl font-mono leading-relaxed text-center max-w-4xl" style={{ lineHeight: '2.5rem', wordSpacing: '0.2rem' }}>
+              {renderedChars}
             </div>
           </div>
           
