@@ -297,14 +297,21 @@ function TypeareaOptimized() {
   
   // Reset test
   const resetTest = useCallback(() => {
-    if (!allWords.current.length) return
+    // Use fallback words if main words array isn't ready
+    const wordsToUse = allWords.current.length > 0 ? allWords.current : [
+      "the", "quick", "brown", "fox", "jumps", "over", "lazy", "dog", "and", "cat",
+      "hello", "world", "typing", "test", "speed", "fast", "slow", "good", "great", "awesome",
+      "javascript", "react", "code", "programming", "computer", "keyboard", "mouse", "screen", "window", "door",
+      "house", "car", "bike", "walk", "run", "jump", "fly", "swim", "dance", "sing",
+      "book", "read", "write", "learn", "study", "work", "play", "game", "fun", "happy"
+    ]
     
     // Generate words based on settings
     const newWords = []
-    const targetWordCount = timeLimit ? 200 : wordCount // More words for time tests
+    const targetWordCount = timeLimit ? 200 : (wordCount || 50) // More words for time tests
     
     // Apply difficulty filter
-    let availableWords = [...allWords.current]
+    let availableWords = [...wordsToUse]
     
     if (difficulty === 'easy') {
       availableWords = availableWords.filter(word => word.length <= 5)
@@ -434,8 +441,8 @@ function TypeareaOptimized() {
   
   return (
     <div className="min-h-screen flex flex-col justify-center items-center p-4 bg-gray-900">
-      {/* Test Selection */}
-      {!isStarted && (
+      {/* Test Selection - Always show when test not active */}
+      {!isStarted && !isComplete && (
         <div className="mb-8">
           <div className="flex flex-col gap-4 items-center">
             {/* Time Limits */}
@@ -446,8 +453,10 @@ function TypeareaOptimized() {
                   key={time}
                   onClick={() => {
                     dispatch({ type: 'settings/setTimeLimit', payload: time })
-                    dispatch({ type: 'settings/setWordCount', payload: null })
-                    resetTest()
+                    setIsStarted(false)
+                    setIsComplete(false)
+                    setInput('')
+                    setTimeout(() => resetTest(), 50)
                   }}
                   className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
                     timeLimit === time
@@ -469,7 +478,10 @@ function TypeareaOptimized() {
                   onClick={() => {
                     dispatch({ type: 'settings/setWordCount', payload: count })
                     dispatch({ type: 'settings/setTimeLimit', payload: null })
-                    resetTest()
+                    setIsStarted(false)
+                    setIsComplete(false)
+                    setInput('')
+                    setTimeout(() => resetTest(), 50)
                   }}
                   className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
                     !timeLimit && wordCount === count
