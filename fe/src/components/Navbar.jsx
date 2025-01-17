@@ -1,7 +1,7 @@
 import { Link, NavLink } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import { useState, useRef, useEffect } from 'react'
-import { Keyboard, Trophy, User, LogOut, Settings, ChevronDown } from 'lucide-react'
+import { Keyboard, Trophy, User, LogOut, Settings, ChevronDown, Brain } from 'lucide-react'
 import { logoutUser } from '../store/slices/authSlice'
 import AuthModal from './auth/AuthModal'
 import { toast } from 'react-toastify'
@@ -109,6 +109,25 @@ function Navbar() {
                 Leaderboard
               </NavLink>
 
+              <NavLink
+                to="/ai-analysis"
+                className={({ isActive }) =>
+                  `px-4 py-2 rounded-lg text-sm font-medium no-underline transition-all duration-300 flex items-center gap-2
+                  ${
+                    isActive
+                      ? theme === "dark"
+                        ? "bg-purple-500/20 text-purple-400 shadow-lg shadow-purple-500/20"
+                        : "bg-purple-500/10 text-purple-600 shadow-lg shadow-purple-500/20"
+                      : theme === "dark"
+                        ? "text-gray-300 hover:bg-gray-700/50 hover:text-white"
+                        : "text-gray-600 hover:bg-gray-100/50 hover:text-gray-900"
+                  }`
+                }
+              >
+                <Brain className="w-4 h-4" />
+                AI Analysis
+              </NavLink>
+
 
               {isAuthenticated && (
                 <NavLink
@@ -173,6 +192,19 @@ function Navbar() {
                       >
                         <User className="w-4 h-4" />
                         Profile
+                      </Link>
+                      
+                      <Link
+                        to="/ai-analysis"
+                        onClick={() => setShowUserDropdown(false)}
+                        className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
+                          theme === "dark"
+                            ? "text-gray-300 hover:bg-gray-700/50 hover:text-white"
+                            : "text-gray-700 hover:bg-gray-100/50 hover:text-gray-900"
+                        }`}
+                      >
+                        <Brain className="w-4 h-4" />
+                        AI Analysis
                       </Link>
                       
                       <Link

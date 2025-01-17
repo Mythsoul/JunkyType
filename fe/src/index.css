@@ -8,11 +8,11 @@
   body {
     @layer bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
-    overflow: hidden; /* Prevent page scrolling */
+    /* Removed overflow: hidden to allow scrolling */
   }
 
   html {
-    overflow: hidden; /* Prevent page scrolling */
+    /* Removed overflow: hidden to allow scrolling */
   }
 }
 
@@ -146,4 +146,42 @@
   backface-visibility: hidden;
   perspective: 1000px;
   transform: translateZ(0);
+}
+
+/* Prevent text bouncing and layout shifts */
+.typing-text {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "tnum" 1;
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  contain: layout style;
+  will-change: auto;
+}
+
+/* Stable character rendering */
+.typing-char {
+  display: inline-block;
+  position: relative;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  min-width: 1ch;
+  text-align: center;
+  vertical-align: baseline;
+}
+
+/* Prevent cursor from causing layout shifts */
+.cursor-stable {
+  position: relative;
+  display: inline-block;
+}
+
+.cursor-stable::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }

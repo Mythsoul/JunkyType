@@ -68,7 +68,7 @@ const Options = memo(function Options() {
     }
     fetchLanguages()
   }, [])
-
+  
   const handleThemeChange = (e) => {
     const newTheme = e.target.value
     localStorage.setItem("theme", newTheme)

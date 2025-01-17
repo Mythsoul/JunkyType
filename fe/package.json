@@ -4,14 +4,17 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --force",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "clear-cache": "node clear-cache.js",
+    "dev-fresh": "npm run clear-cache && vite --force --no-cache"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
     "easy.auth98": "^5.0.2",
+    "hangul-js": "^0.2.6",
     "lucide-react": "^0.513.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

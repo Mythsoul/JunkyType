@@ -6,6 +6,8 @@ import Navbar from "./components/Navbar"
 import TypeareaOptimized from "./components/TypeareaOptimized"
 import Profile from "./components/Profile"
 import Leaderboard from "./components/Leaderboard"
+import AIAnalysis from "./components/AIAnalysis"
+import Settings from "./components/Settings"
 import ErrorBoundary from "./components/ErrorBoundary"
 
 function AppContent() {
@@ -26,6 +28,8 @@ function AppContent() {
             <Route path="/" element={<TypeareaOptimized />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/ai-analysis" element={<AIAnalysis />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>
       </div>
