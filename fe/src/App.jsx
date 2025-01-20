@@ -1,17 +1,25 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { Provider } from "react-redux"
+import { useEffect } from "react"
+import { useDispatch } from "react-redux"
 import store from "./store/store"
 import { useSelector } from "react-redux"
+import { loadSettings } from "./store/slices/settingsSlice"
 import Navbar from "./components/Navbar"
 import TypeareaOptimized from "./components/TypeareaOptimized"
 import Profile from "./components/Profile"
-import Leaderboard from "./components/Leaderboard"
 import AIAnalysis from "./components/AIAnalysis"
 import Settings from "./components/Settings"
 import ErrorBoundary from "./components/ErrorBoundary"
 
 function AppContent() {
+  const dispatch = useDispatch()
   const theme = useSelector((state) => state.settings.theme)
+
+  useEffect(() => {
+    // Load settings from localStorage on app start
+    dispatch(loadSettings())
+  }, [dispatch])
 
   return (
     <BrowserRouter>
