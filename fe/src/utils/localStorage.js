@@ -1,4 +1,3 @@
-// localStorage utility for user data management
 
 const STORAGE_KEYS = {
   USER_STATS: 'junkytype_user_stats',
