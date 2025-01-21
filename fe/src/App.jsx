@@ -35,7 +35,6 @@ function AppContent() {
           <Routes>
             <Route path="/" element={<TypeareaOptimized />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/ai-analysis" element={<AIAnalysis />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
