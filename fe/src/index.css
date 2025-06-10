@@ -1,3 +1,132 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  * {
+    @layer border-border;
+  }
+
+  body {
+    @layer bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    overflow: hidden; /* Prevent page scrolling */
+  }
+
+  html {
+    overflow: hidden; /* Prevent page scrolling */
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Hide scrollbars completely while keeping scroll functionality */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
+}
+
+/* Elegant, calming transitions */
+.transition-colors {
+  transition-property: color, background-color, border-color;
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition-duration: 200ms;
+}
+
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition-duration: 300ms;
+}
+
+/* Gentle, elegant animations */
+@keyframes gentle-pulse {
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: scaleY(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scaleY(0.95);
+  }
+}
+
+@keyframes gentle-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 4px rgba(52, 211, 153, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
+  }
+}
+
+/* Word active styles with subtle elegance */
+.word-active-dark {
+  position: relative;
+}
+
+.word-active-dark::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background-color: rgba(59, 130, 246, 0.06);
+  border-radius: 0.25rem;
+  z-index: -1;
+  transform: translateZ(0);
+  pointer-events: none;
+  transition: all 0.2s ease-out;
+}
+
+.word-active-light {
+  position: relative;
+}
+
+.word-active-light::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background-color: rgba(59, 130, 246, 0.03);
+  border-radius: 0.25rem;
+  z-index: -1;
+  transform: translateZ(0);
+  pointer-events: none;
+  transition: all 0.2s ease-out;
+}
+
+/* Character styles with elegant hardware acceleration */
+.current-char {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize rendering for elegant typing */
+.typing-area {
+  will-change: scroll-position;
+  contain: layout style paint;
+  transform: translateZ(0);
+}
+
+/* Prevent text selection for smoother experience */
+.select-none {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Elegant scrolling optimization */
+.smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
