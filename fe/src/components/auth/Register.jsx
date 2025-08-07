@@ -61,15 +61,11 @@ function Register({ onSwitchToLogin, onClose }) {
     dispatch(clearError())
     
     try {
-      const emailConfig = enableEmailVerification ? {
-        sendVerificationEmail: true
-      } : undefined
-
       const result = await dispatch(registerUser({
         email: formData.email,
         password: formData.password,
         username: formData.username,
-        emailConfig : {sendVerificationEmail: enableEmailVerification}
+        emailConfig: { sendVerificationEmail: enableEmailVerification }
       })).unwrap()
       
       if (enableEmailVerification) {

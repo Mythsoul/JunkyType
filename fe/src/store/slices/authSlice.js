@@ -40,7 +40,8 @@ export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async ({ email, password, username, emailConfig }, { rejectWithValue }) => {
     try {
-      const result = await authSignUp(email, password, username, emailConfig)
+      // Pass empty string for applicationUrl and emailConfig as 5th parameter
+      const result = await authSignUp(email, password, username, '', emailConfig)
       if (result.success) {
         return result.data || { email, username }
       } else {
