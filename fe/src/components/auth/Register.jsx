@@ -69,7 +69,7 @@ function Register({ onSwitchToLogin, onClose }) {
         email: formData.email,
         password: formData.password,
         username: formData.username,
-        emailConfig
+        emailConfig : {sendVerificationEmail: enableEmailVerification}
       })).unwrap()
       
       if (enableEmailVerification) {
